@@ -3,9 +3,9 @@ function convertir() {
     var destino = document.getElementById("resultado");
     var texto = "";
     if (isNaN(origen)) {
-        texto = "Ingrese un número.";
+        texto = "Eso no es un número.";
     } else if (origen.length > 15) {
-        texto = "Ingrese un número más chico.";
+        texto = "Escribe un número más chico.";
     } else {
         texto = transformarNumeroAPalabra(parseInt(origen));
     }
