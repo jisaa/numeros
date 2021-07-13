@@ -1,26 +1,48 @@
 function convertir() {
-    limpiar();
+    var separador = ",";
+    var nombre_separador = "coma";
+    if (document.getElementById("punto").checked) {
+        nombre_separador = "punto";
+        separador = ".";
+    } else if (document.getElementById("guion").checked) {
+        nombre_separador = "guión";
+        separador = "-";
+    }
+    limpiar(separador);
+
     var origen = document.getElementById("origen").value;
     var destino = document.getElementById("resultado");
-    var texto = "";
-    if (isNaN(origen)) {
-        texto = "Eso no es un número.";
-    } else if (origen.length > 15) {
-        texto = "Escribe un número más chico.";
-    } else {
-        texto = transformarNumeroAPalabra(parseInt(origen));
+    var partes = origen.split(separador);
+    if (partes[0].length > 15) {
+        destino.value = "Escribe un número más chico.";
+        return;
     }
-    destino.value = texto;
+
+    destino.value = transformarNumeroAPalabra(parseInt(partes[0]));
+
+    if (partes.length == 2 && partes[1].length > 0) {
+        destino.value += " " + nombre_separador;
+        for (c of partes[1]) {
+            destino.value += " " + transformarTresDigitos(parseInt(c));
+        }
+    }
+
 }
 
-function limpiar() {
+function limpiar(separador) {
     var origen = document.getElementById("origen");
     var texto_origen = origen.value;
     var texto_limpio = "";
+    var separador_encontrado = false;
+
     for (c of texto_origen) {
         // Abusando la conversión de tipos de javascript
         if (c < 10) {
             texto_limpio += c;
+        }
+        if (c == separador && !separador_encontrado) {
+            texto_limpio += c;
+            separador_encontrado = true;
         }
     }
     origen.value = texto_limpio;
@@ -191,8 +213,8 @@ function transformarNumeroAPalabra(n) {
     salida += transformarTresDigitos((n));
     if (n % 100 != 11 && n % 10 == 1)
         salida += "o ";
-    if (salida.Length > 4 && salida[salida.Length - 4] == 'ú')
-        salida = salida.Substring(0, salida.Length - 4) + "uno ";
+    if (salida.Length > 4 && salida[salida.Length - 3] == "ú")
+        salida = salida.Substring(0, salida.Length - 3) + "uno ";
 
-    return salida.replaceAll("  ", " ");
+    return salida.trim().replaceAll("  ", " ");
 }
