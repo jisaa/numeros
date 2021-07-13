@@ -1,4 +1,5 @@
 function convertir() {
+    limpiar();
     var origen = document.getElementById("origen").value;
     var destino = document.getElementById("resultado");
     var texto = "";
@@ -10,6 +11,19 @@ function convertir() {
         texto = transformarNumeroAPalabra(parseInt(origen));
     }
     destino.value = texto;
+}
+
+function limpiar() {
+    var origen = document.getElementById("origen");
+    var texto_origen = origen.value;
+    var texto_limpio = "";
+    for (c of texto_origen) {
+        // Abusando la conversión de tipos de javascript
+        if (c < 10) {
+            texto_limpio += c;
+        }
+    }
+    origen.value = texto_limpio;
 }
 
 function transformarTresDigitos(n) {
