@@ -213,8 +213,6 @@ function transformarNumeroAPalabra(n) {
     salida += transformarTresDigitos((n));
     if (n % 100 != 11 && n % 10 == 1)
         salida += "o ";
-    if (salida.Length > 4 && salida[salida.Length - 3] == "ú")
-        salida = salida.Substring(0, salida.Length - 3) + "uno ";
 
-    return salida.trim().replaceAll("  ", " ");
+    return salida.trim().replaceAll("  ", " ").replaceAll("iúno", "iuno");
 }
