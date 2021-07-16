@@ -1,3 +1,78 @@
+let separadores = ".,-";
+let nombre_separadores = {
+    ".": "punto",
+    ",": "coma",
+    "-": "guión"
+};
+
+
+function convertir_masivo() {
+    var origen = document.getElementById("origen").value;
+    var destino = document.getElementById("resultado");
+
+    var resultado = "";
+    var digitos = "0123456789";
+    var palabra = "";
+    // 0: fuera de número. 1: en número
+    var q = 0;
+    for (var i = 0; i < origen.length; ++i) {
+        if (q == 0) {
+            if (digitos.includes(origen[i])) {
+                palabra = origen[i];
+                q = 1;
+            } else {
+                resultado += origen[i];
+            }
+        } else {
+            if (digitos.includes(origen[i]) || separadores.includes(origen[i])) {
+                palabra += origen[i];
+            } else {
+                resultado += convertir_sucio(palabra);
+                resultado += origen[i];
+                palabra = "";
+                q = 0;
+            }
+        }
+    }
+    if (palabra.length > 0) {
+        resultado += convertir_sucio(palabra);
+    }
+    destino.value = resultado;
+}
+
+function convertir_sucio(palabra) {
+    // descartar separadores del final,
+    // asumiendo que son puntuación
+    var final = "";
+    var i = palabra.length - 1
+    for (; i >= 0; --i) {
+        if (separadores.includes(palabra[i])) {
+            final = palabra[i] + final;
+        } else {
+            break;
+        }
+    }
+    var numero = palabra.substring(0, i + 1);
+
+    // el último separador es el que nos interesa, el resto se borran
+    var numero_limpio = "";
+    var ultimo_separador = -1;
+    for (var i=0; i<numero.length; ++i) {
+        if (separadores.includes(numero[i])) {
+            ultimo_separador = i;
+        } else {
+            numero_limpio += numero[i];
+        }
+    }
+    if (ultimo_separador != -1) {
+        var decimales = numero.substring(ultimo_separador+1);
+        var parte_entera = numero.substring(0, ultimo_separador);
+        return parte_entera;
+    }
+
+
+    return transformarNumeroAPalabra(numero_limpio) + final;
+}
 
 function convertir() {
     var separador = ",";
