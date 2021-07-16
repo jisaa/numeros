@@ -1,3 +1,4 @@
+
 function convertir() {
     var separador = ",";
     var nombre_separador = "coma";
@@ -8,11 +9,11 @@ function convertir() {
         nombre_separador = "guión";
         separador = "-";
     }
-    limpiar(separador);
-
-    var origen = document.getElementById("origen").value;
+    var origen = document.getElementById("origen");
+    var texto_limpio = limpiar(origen.value, separador);
+    origen.value = texto_limpio;
     var destino = document.getElementById("resultado");
-    var partes = origen.split(separador);
+    var partes = texto_limpio.split(separador);
     if (partes[0].length > 15) {
         destino.value = "Escribe un número más chico.";
         return;
@@ -23,15 +24,13 @@ function convertir() {
     if (partes.length == 2 && partes[1].length > 0) {
         destino.value += " " + nombre_separador;
         for (c of partes[1]) {
-            destino.value += " " + transformarTresDigitos(parseInt(c));
+            destino.value += " " + transformarNumeroAPalabra(parseInt(c));
         }
     }
 
 }
 
-function limpiar(separador) {
-    var origen = document.getElementById("origen");
-    var texto_origen = origen.value;
+function limpiar(texto_origen, separador) {
     var texto_limpio = "";
     var separador_encontrado = false;
 
@@ -45,7 +44,7 @@ function limpiar(separador) {
             separador_encontrado = true;
         }
     }
-    origen.value = texto_limpio;
+    return texto_limpio;
 }
 
 function transformarTresDigitos(n) {
