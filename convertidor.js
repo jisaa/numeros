@@ -1,3 +1,76 @@
+let separadores = ".,-";
+let nombre_separadores = {
+    ".": "punto",
+    ",": "coma",
+    "-": "guión"
+};
+
+
+function convertir_masivo() {
+    var origen = document.getElementById("origen").value;
+    var destino = document.getElementById("resultado");
+
+    var resultado = "";
+    var digitos = "0123456789";
+    var palabra = "";
+    // 0: fuera de número. 1: en número
+    var q = 0;
+    for (var i = 0; i < origen.length; ++i) {
+        if (q == 0) {
+            if (digitos.includes(origen[i]) || origen[i] == "$") {
+                palabra = origen[i];
+                q = 1;
+            } else {
+                resultado += origen[i];
+            }
+        } else {
+            if (digitos.includes(origen[i]) || separadores.includes(origen[i])) {
+                palabra += origen[i];
+            } else {
+                resultado += convertir_sucio(palabra);
+                resultado += origen[i];
+                palabra = "";
+                q = 0;
+            }
+        }
+    }
+    if (palabra.length > 0) {
+        resultado += convertir_sucio(palabra);
+    }
+    destino.value = resultado.replace("-k", " guión k");
+}
+
+function convertir_sucio(palabra) {
+    // descartar separadores del final,
+    // asumiendo que son puntuación
+    var final = "";
+    var i = palabra.length - 1
+    for (; i >= 0; --i) {
+        if (separadores.includes(palabra[i])) {
+            final = palabra[i] + final;
+        } else {
+            break;
+        }
+    }
+    if (palabra[0] == "$") {
+        final = " pesos" + final;
+        palabra = palabra.substring(1);
+        i -= 1;
+    }
+    var numero = palabra.substring(0, i + 1);
+
+    // el último separador es el que nos interesa, el resto se borran
+    var ultimo_separador = -1;
+    for (var i = 0; i < numero.length; ++i) {
+        if (separadores.includes(numero[i])) {
+            ultimo_separador = i;
+        }
+    }
+    if (ultimo_separador != -1) {
+        return convertir_con_separador(numero, numero[ultimo_separador]) + final;
+    }
+    return transformarNumeroAPalabra(numero) + final;
+}
 
 function convertir() {
     var separador = ",";
@@ -27,7 +100,26 @@ function convertir() {
             destino.value += " " + transformarNumeroAPalabra(parseInt(c));
         }
     }
+}
 
+function convertir_con_separador(origen, separador) {
+    var nombre_separador = nombre_separadores[separador];
+    var texto_limpio = limpiar(origen, separador);
+
+    var partes = texto_limpio.split(separador);
+    if (partes[0].length > 15 || partes.length > 2) {
+        return origen;
+    }
+
+    var convertido = transformarNumeroAPalabra(parseInt(partes[0]));
+
+    if (partes.length == 2 && partes[1].length > 0) {
+        convertido += " " + nombre_separador;
+        for (c of partes[1]) {
+            convertido += " " + transformarNumeroAPalabra(parseInt(c));
+        }
+    }
+    return convertido;
 }
 
 function limpiar(texto_origen, separador) {
