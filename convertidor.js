@@ -1,10 +1,11 @@
-let separadores = ".,-";
+// Separadores de decimales para textos largos
+let separadores = ",-";
+// Nombres comunes para textos largos y números sueltos
 let nombre_separadores = {
     ".": "punto",
     ",": "coma",
     "-": "guión"
 };
-
 
 function convertir_masivo() {
     var origen = document.getElementById("origen").value;
@@ -24,7 +25,7 @@ function convertir_masivo() {
                 resultado += origen[i];
             }
         } else {
-            if (digitos.includes(origen[i]) || separadores.includes(origen[i])) {
+            if (digitos.includes(origen[i]) || separadores.includes(origen[i]) || origen[i] == ".") {
                 palabra += origen[i];
             } else {
                 resultado += convertir_sucio(palabra);
@@ -69,19 +70,17 @@ function convertir_sucio(palabra) {
     if (ultimo_separador != -1) {
         return convertir_con_separador(numero, numero[ultimo_separador]) + final;
     }
-    return transformarNumeroAPalabra(numero) + final;
+    return transformarNumeroAPalabra(limpiar(numero, "!!")) + final;
 }
 
 function convertir() {
     var separador = ",";
-    var nombre_separador = "coma";
     if (document.getElementById("punto").checked) {
-        nombre_separador = "punto";
         separador = ".";
     } else if (document.getElementById("guion").checked) {
-        nombre_separador = "guión";
         separador = "-";
     }
+    nombre_separador = nombre_separadores[separador];
     var origen = document.getElementById("origen");
     var texto_limpio = limpiar(origen.value, separador);
     origen.value = texto_limpio;
